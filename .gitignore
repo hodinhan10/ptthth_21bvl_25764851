@@ -1,0 +1,10 @@
+# Java build output
+*.class
+/bin/
+/out/
+**/out/
+
+# Local editor settings
+/.vscode/settings.json
+/.vscode/java-formatter.xml
+/.settings/editor.formatOnSave

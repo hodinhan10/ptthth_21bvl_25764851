@@ -5,7 +5,7 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry excluding="lab04-socket/" kind="src" path="src"/>
-	<classpathentry kind="src" path="src/lab04-socket/src"/>
+	<classpathentry excluding="_old/|lab04-socket/" kind="src" path=""/>
+	<classpathentry kind="src" path="lab04-socket/src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
