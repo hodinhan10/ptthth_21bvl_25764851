@@ -3,6 +3,7 @@
 /bin/
 /out/
 **/out/
+/AGENTS.md
 
 # Local editor settings
 /.vscode/settings.json
