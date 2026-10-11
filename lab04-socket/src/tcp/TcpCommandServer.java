@@ -19,7 +19,7 @@ public class TcpCommandServer {
             System.out.println("TCP server listening on port " + PORT);
             while (true) {
                 try (Socket socket = server.accept()) {
-                    server(socket);
+                    serve(socket);
                 } catch (IOException e) {
                     System.err.println("Lỗi phiên client: " + e.getMessage());
                 }
@@ -29,7 +29,7 @@ public class TcpCommandServer {
         }
     }
 
-    static void server(Socket socket) throws IOException {
+    static void serve(Socket socket) throws IOException {
         try (
                 // in: nhận và đọc từng dòng yêu cầu do client gửi đến.
                 BufferedReader in = new BufferedReader(
@@ -41,7 +41,7 @@ public class TcpCommandServer {
             while ((request = in.readLine()) != null) {
                 String response = process(request);
                 out.println(response);
-                if (request.equalsIgnoreCase("QUIT")) {
+                if (request.trim().equalsIgnoreCase("QUIT")) {
                     break;
                 }
             }

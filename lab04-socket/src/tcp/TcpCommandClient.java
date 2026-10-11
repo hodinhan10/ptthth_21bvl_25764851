@@ -33,7 +33,7 @@ public class TcpCommandClient {
                     break;
                 }
                 System.out.println("Server: " + response);
-                if (request.equalsIgnoreCase("QUIT")) {
+                if (request.trim().equalsIgnoreCase("QUIT")) {
                     break;
                 }
             }
