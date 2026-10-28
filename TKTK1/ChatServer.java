@@ -23,9 +23,7 @@ public class ChatServer {
                 Socket socket = server.accept();
 
                 // Giao client này cho một luồng riêng rồi tiếp tục chờ client khác.
-                ClientHandler handler = new ClientHandler(socket, rooms);
-                Thread thread = new Thread(handler);
-                thread.start();
+                new Thread(new ClientHandler(socket, rooms)).start();
             }
         } catch (IOException e) {
             System.err.println("Lỗi server: " + e.getMessage());

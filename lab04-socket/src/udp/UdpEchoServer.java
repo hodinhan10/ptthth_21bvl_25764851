@@ -14,19 +14,14 @@ public class UdpEchoServer {
         try (DatagramSocket socket = new DatagramSocket(PORT)) {
             System.out.println("UDP server listening on port " + PORT);
             while (true) {
-                DatagramPacket request =
-                        new DatagramPacket(buffer, buffer.length);
-                socket.receive(request);
+                DatagramPacket req = new DatagramPacket(buffer, buffer.length);
+                socket.receive(req);
 
-                String message = new String(request.getData(),
-                        request.getOffset(), request.getLength(),
-                        StandardCharsets.UTF_8);
-                String text = "ACK " + message.toUpperCase(Locale.ROOT);
-                byte[] responseData = text.getBytes(StandardCharsets.UTF_8);
-                DatagramPacket response = new DatagramPacket(
-                        responseData, responseData.length,
-                        request.getAddress(), request.getPort());
-                socket.send(response);
+                String message = new String(req.getData(), req.getOffset(), req.getLength(), StandardCharsets.UTF_8);
+                String text = message.toUpperCase(Locale.ROOT);
+                byte[] resData = text.getBytes(StandardCharsets.UTF_8);
+                DatagramPacket res = new DatagramPacket(resData, resData.length, req.getAddress(), req.getPort());
+                socket.send(res);
             }
         } catch (IOException e) {
             System.err.println("UDP server error: " + e.getMessage());

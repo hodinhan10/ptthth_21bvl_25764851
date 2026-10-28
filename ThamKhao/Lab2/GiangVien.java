@@ -41,7 +41,7 @@ public class GiangVien extends Nguoi {
 	}
 
 	public String getChuyenMon() {
-		return chuyenMon;
+		return this.chuyenMon;
 	}
 
 	public void setChuyenMon(String chuyenMon) {

@@ -23,46 +23,46 @@ public class TcpCommandClient {
                 // 1. console: nhận chữ từ BÀN PHÍM.
                 //
                 // InputStreamReader có 2 tham số:
-                //   1) System.in: luồng byte nhận từ bàn phím.
-                //   2) UTF_8: cách đổi các byte đó thành ký tự.
+                // 1) System.in: luồng byte nhận từ bàn phím.
+                // 2) UTF_8: cách đổi các byte đó thành ký tự.
                 //
                 // BufferedReader có 1 tham số:
-                //   1) InputStreamReader: nơi cung cấp các ký tự để đọc thành từng dòng.
+                // 1) InputStreamReader: nơi cung cấp các ký tự để đọc thành từng dòng.
                 //
                 // Dữ liệu đi như sau:
-                //   bàn phím -> System.in (byte) -> InputStreamReader (ký tự)
-                //             -> BufferedReader -> console.readLine() (một dòng)
+                // bàn phím -> System.in (byte) -> InputStreamReader (ký tự)
+                // -> BufferedReader -> console.readLine() (một dòng)
                 BufferedReader console = new BufferedReader(
                         new InputStreamReader(System.in, StandardCharsets.UTF_8));
 
                 // 2. in: nhận chữ từ SERVER.
                 //
                 // InputStreamReader có 2 tham số:
-                //   1) socket.getInputStream(): luồng byte đi từ server vào client.
-                //   2) UTF_8: cách đổi các byte nhận được thành ký tự.
+                // 1) socket.getInputStream(): luồng byte đi từ server vào client.
+                // 2) UTF_8: cách đổi các byte nhận được thành ký tự.
                 //
                 // BufferedReader có 1 tham số:
-                //   1) InputStreamReader: nơi cung cấp các ký tự để đọc thành từng dòng.
+                // 1) InputStreamReader: nơi cung cấp các ký tự để đọc thành từng dòng.
                 //
                 // Dữ liệu đi như sau:
-                //   server -> socket (byte) -> InputStreamReader (ký tự)
-                //          -> BufferedReader -> in.readLine() (một dòng)
+                // server -> socket (byte) -> InputStreamReader (ký tự)
+                // -> BufferedReader -> in.readLine() (một dòng)
                 BufferedReader in = new BufferedReader(
                         new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
 
                 // 3. out: gửi chữ từ CLIENT tới SERVER.
                 //
                 // OutputStreamWriter có 2 tham số:
-                //   1) socket.getOutputStream(): luồng byte dùng để gửi tới server.
-                //   2) UTF_8: cách đổi ký tự thành byte trước khi gửi.
+                // 1) socket.getOutputStream(): luồng byte dùng để gửi tới server.
+                // 2) UTF_8: cách đổi ký tự thành byte trước khi gửi.
                 //
                 // PrintWriter có 2 tham số:
-                //   1) OutputStreamWriter: nơi nhận chữ và chuyển chữ thành byte.
-                //   2) true: tự flush (đẩy dữ liệu đi) khi gọi println, printf hoặc format.
+                // 1) OutputStreamWriter: nơi nhận chữ và chuyển chữ thành byte.
+                // 2) true: tự flush (đẩy dữ liệu đi) khi gọi println, printf hoặc format.
                 //
                 // Dữ liệu đi như sau:
-                //   out.println() -> PrintWriter (chữ) -> OutputStreamWriter (byte)
-                //                 -> socket -> server
+                // out.println() -> PrintWriter (chữ) -> OutputStreamWriter (byte)
+                // -> socket -> server
                 PrintWriter out = new PrintWriter(
                         new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true)) {
             System.out.println("Connected. Enter PING, TIME, UPPER text, QUIT");

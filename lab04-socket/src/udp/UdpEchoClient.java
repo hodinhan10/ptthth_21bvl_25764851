@@ -18,14 +18,11 @@ public class UdpEchoClient {
             socket.setSoTimeout(3000);
             socket.send(new DatagramPacket(data, data.length, server, port));
 
-            byte[] buffer = new byte[4096];
-            DatagramPacket response =
-                    new DatagramPacket(buffer, buffer.length);
+            byte[] buf = new byte[4096];
+            DatagramPacket res = new DatagramPacket(buf, buf.length);
             try {
-                socket.receive(response);
-                String text = new String(response.getData(),
-                        response.getOffset(), response.getLength(),
-                        StandardCharsets.UTF_8);
+                socket.receive(res);
+                String text = new String(res.getData(), res.getOffset(), res.getLength(), StandardCharsets.UTF_8);
                 System.out.println("Server: " + text);
             } catch (SocketTimeoutException e) {
                 System.err.println("Hết 3 giây nhưng chưa nhận được phản hồi");

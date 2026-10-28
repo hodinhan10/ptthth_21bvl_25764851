@@ -28,18 +28,17 @@ public class ClientHandler implements Runnable {
         try (Socket connection = socket;
                 BufferedReader in = new BufferedReader(new InputStreamReader(
                         connection.getInputStream(), StandardCharsets.UTF_8));
-                PrintWriter writer = new PrintWriter(new OutputStreamWriter(
+                PrintWriter out = new PrintWriter(new OutputStreamWriter(
                         connection.getOutputStream(), StandardCharsets.UTF_8), true)) {
-            out = writer;
-
+            this.out = out;
             // Bước 1: đọc tên client gửi đến.
-            if (!readName(in)) {
+            if (!onReadName(in)) {
                 return;
             }
 
             // Bước 2: gửi danh sách phòng cho client lựa chọn.
-            send("Xin chào " + name + "!");
-            showRooms();
+            onSend("Xin chào " + name + "!");
+            onShowRooms();
 
             // Bước 3: liên tục đọc lựa chọn, tin nhắn hoặc lệnh của client.
             String line;
@@ -47,69 +46,66 @@ public class ClientHandler implements Runnable {
                 String command = line.trim();
 
                 if (command.equalsIgnoreCase("/exit")) {
-                    leaveRoom();
-                    send("Đã ngắt kết nối. Tạm biệt " + name + "!");
+                    onLeaveRoom();
+                    onSend("Đã ngắt kết nối. Tạm biệt " + name + "!");
                     break;
                 } else if (command.equalsIgnoreCase("/quit")) {
-                    leaveRoom();
-                    showRooms();
+                    onLeaveRoom();
+                    onShowRooms();
                 } else if (room == null) {
-                    joinRoom(command);
+                    onJoinRoom(command);
                 } else if (command.startsWith("/")) {
-                    send("Lệnh không hợp lệ. Dùng /quit hoặc /exit.");
+                    onSend("Lệnh không hợp lệ. Dùng /quit hoặc /exit.");
                 } else if (!command.isEmpty()) {
-                    room.sendMessage(this, "[" + room.getName() + "] " + name + ": " + line);
+                    room.onSendMessage(this, "[" + room.getName() + "] " + name + ": " + line);
                 }
             }
         } catch (IOException e) {
             System.err.println("Client ngắt kết nối: " + e.getMessage());
         } finally {
             // Nếu client đóng cửa sổ đột ngột, vẫn xóa client khỏi phòng.
-            leaveRoom();
+            onLeaveRoom();
         }
     }
 
-    private boolean readName(BufferedReader in) throws IOException {
+    private boolean onReadName(BufferedReader in) throws IOException {
         String line;
         while ((line = in.readLine()) != null) {
             name = line.trim();
             if (name.equalsIgnoreCase("/exit")) {
-                send("Đã ngắt kết nối.");
+                onSend("Đã ngắt kết nối.");
                 return false;
             }
             if (!name.isEmpty() && !name.startsWith("/")) {
                 return true;
             }
-            send("Tên không được rỗng hoặc bắt đầu bằng /. Nhập lại tên:");
+            onSend("Tên không được rỗng hoặc bắt đầu bằng /. Nhập lại tên:");
         }
         return false;
     }
 
-    private void showRooms() {
-        send("=== DANH SÁCH PHÒNG ===");
+    private void onShowRooms() {
+        onSend("=== DANH SÁCH PHÒNG ===");
         for (int i = 0; i < rooms.length; i++) {
-            send((i + 1) + ". " + rooms[i].getName());
+            onSend((i + 1) + ". " + rooms[i].getName());
         }
-        send("Nhập số hoặc tên phòng để tham gia; /exit để thoát.");
+        onSend("Nhập số hoặc tên phòng để tham gia; /exit để thoát.");
     }
 
-    private void joinRoom(String choice) {
+    private void onJoinRoom(String choice) {
         for (int i = 0; i < rooms.length; i++) {
-            String number = String.valueOf(i + 1);
-            String roomName = rooms[i].getName();
-
-            if (choice.equals(number) || choice.equalsIgnoreCase(roomName)) {
+            if (choice.equals(String.valueOf(i + 1)) || choice.equalsIgnoreCase(rooms[i].getName())) {
                 room = rooms[i];
-                room.addClient(this);
+                room.onAddClient(this);
                 return;
             }
         }
-        send("Phòng không hợp lệ. Hãy chọn số hoặc tên phòng trong danh sách.");
+        onSend("Phòng không hợp lệ. Hãy chọn số hoặc tên phòng trong danh sách.");
     }
 
-    private void leaveRoom() {
+    private void onLeaveRoom() {
         if (room != null) {
-            room.removeClient(this);
+            room.onRemoveClient(this);
             room = null;
         }
     }
@@ -119,7 +115,7 @@ public class ClientHandler implements Runnable {
     }
 
     // Các phòng dùng phương thức này để gửi một dòng đến client.
-    public void send(String message) {
+    public void onSend(String message) {
         out.println(message);
     }
 }

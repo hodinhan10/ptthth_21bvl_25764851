@@ -17,14 +17,12 @@ public class MultiClientTcpServer {
             while (true) {
                 Socket socket = server.accept();
                 pool.submit(() -> {
-                    String client = String.valueOf(
-                            socket.getRemoteSocketAddress());
+                    String client = String.valueOf(socket.getRemoteSocketAddress());
                     System.out.println("Connected: " + client);
                     try (socket) {
                         TcpCommandServer.serve(socket);
                     } catch (IOException e) {
-                        System.err.println("Client " + client
-                                + " failed: " + e.getMessage());
+                        System.err.println("Client " + client + " failed: " + e.getMessage());
                     } finally {
                         System.out.println("Disconnected: " + client);
                     }

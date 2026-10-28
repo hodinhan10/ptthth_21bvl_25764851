@@ -17,17 +17,11 @@ public class ChatClient {
         BufferedReader console = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8));
 
         try {
-            String name;
-            while (true) {
-                System.out.print("Nhập tên của bạn: ");
-                name = console.readLine();
-                if (name == null || name.trim().equalsIgnoreCase("/exit")) {
-                    return;
-                }
-                // Tên hợp lệ thì thoát vòng lặp; chưa hợp lệ thì nhập lại.
-                if (!name.trim().isEmpty() && !name.trim().startsWith("/")) {
-                    break;
-                }
+            // Server kiểm tra tên và yêu cầu nhập lại nếu chưa hợp lệ.
+            System.out.print("Nhập tên của bạn: ");
+            String name = console.readLine();
+            if (name == null || name.trim().equalsIgnoreCase("/exit")) {
+                return;
             }
 
             try (Socket socket = new Socket(host, PORT);
@@ -39,7 +33,7 @@ public class ChatClient {
                 out.println(name.trim());
 
                 // Một luồng đọc bàn phím để gửi, luồng main nhận tin từ server.
-                Thread sender = new Thread(() -> sendFromKeyboard(console, out), "gui-tin");
+                Thread sender = new Thread(() -> onSendFromKeyboard(console, out));
                 // Cho phép chương trình kết thúc khi server đóng kết nối,
                 // kể cả khi luồng bàn phím còn đang chờ người dùng nhập.
                 sender.setDaemon(true);
@@ -56,7 +50,7 @@ public class ChatClient {
         }
     }
 
-    private static void sendFromKeyboard(BufferedReader console, PrintWriter out) {
+    private static void onSendFromKeyboard(BufferedReader console, PrintWriter out) {
         try {
             String line;
             while ((line = console.readLine()) != null) {
@@ -66,11 +60,10 @@ public class ChatClient {
                     return;
                 }
             }
-            // Nếu đầu vào bàn phím kết thúc, yêu cầu server đóng kết nối.
-            out.println("/exit");
         } catch (IOException e) {
             System.err.println("Lỗi đọc bàn phím: " + e.getMessage());
-            out.println("/exit");
         }
+        // Hết dữ liệu bàn phím hoặc đọc bị lỗi thì yêu cầu thoát.
+        out.println("/exit");
     }
 }

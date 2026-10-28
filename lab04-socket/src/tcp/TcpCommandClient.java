@@ -24,16 +24,16 @@ public class TcpCommandClient {
                         new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8), true)) {
             System.out.println("Connected. Enter PING, TIME, UPPER text, QUIT");
 
-            String request;
-            while ((request = console.readLine()) != null) {
-                out.println(request);
-                String response = in.readLine();
-                if (response == null) {
+            String req;
+            while ((req = console.readLine()) != null) {
+                out.println(req);
+                String res = in.readLine();
+                if (res == null) {
                     System.out.println("Server closed the connection");
                     break;
                 }
-                System.out.println("Server: " + response);
-                if (request.trim().equalsIgnoreCase("QUIT")) {
+                System.out.println("Server: " + res);
+                if (req.trim().equalsIgnoreCase("QUIT")) {
                     break;
                 }
             }
